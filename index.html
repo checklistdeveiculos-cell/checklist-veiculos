@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Checklist de Veículo - Comtrasil</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+
+<img src="logo.png" class="logo">
+
+<h1>Checklist de Inspeção de Veículo</h1>
+
+</header>
+
+<form id="checklistForm">
+
+<label>Nome Completo</label>
+<input type="text" id="motorista" required>
+
+<label>Placa do Veículo</label>
+<input type="text" id="placa" required>
+
+<label>KM Atual</label>
+<input type="number" id="km" required>
+
+<label>Nível de Combustível</label>
+<select id="combustivel">
+<option>Cheio</option>
+<option>3/4</option>
+<option>Meio</option>
+<option>1/4</option>
+<option>Reserva</option>
+</select>
+
+<label>Estado dos Pneus</label>
+<select id="pneus">
+<option>Bom</option>
+<option>Regular</option>
+<option>Ruim</option>
+</select>
+
+<label>Limpeza Interna</label>
+<select id="limpeza">
+<option>Limpo</option>
+<option>Regular</option>
+<option>Sujo</option>
+</select>
+
+<label>Iluminação</label>
+<select id="iluminacao">
+<option value="ok">OK</option>
+<option value="problema">Problema</option>
+</select>
+
+<div id="problemaLuz" class="hidden">
+
+<label>Onde está o problema?</label>
+
+<select id="tipoLuz">
+<option>Farol</option>
+<option>Luz de Freio</option>
+<option>Seta</option>
+<option>Luz de Ré</option>
+<option value="outro">Outro</option>
+</select>
+
+<input type="text" id="outroProblema" class="hidden" placeholder="Descreva o problema">
+
+</div>
+
+<label>Existe alguma avaria?</label>
+
+<select id="avaria">
+<option value="nao">Não</option>
+<option value="sim">Sim</option>
+</select>
+
+<div id="campoAvaria" class="hidden">
+
+<label>Foto da Avaria</label>
+<input type="file" id="foto" accept="image/*">
+
+<img id="preview" class="hidden">
+
+<label>Descrição da Avaria</label>
+<textarea id="descricaoAvaria"></textarea>
+
+</div>
+
+<label>Observações</label>
+<textarea id="observacoes"></textarea>
+
+<label>Assinatura do Motorista</label>
+
+<canvas id="assinatura"></canvas>
+
+<button type="button" id="limpar">Limpar Assinatura</button>
+
+<button type="submit">Enviar Checklist</button>
+
+<p id="mensagem" class="hidden">
+✅ Checklist enviado com sucesso!
+</p>
+
+</form>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
