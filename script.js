@@ -11,8 +11,7 @@ ctx.lineWidth = 1
 ctx.lineCap = "round"
 ctx.strokeStyle = "black"
 
-
-function posicaoMouse(e){
+function getPosMouse(e){
 const rect = canvas.getBoundingClientRect()
 return {
 x: e.clientX - rect.left,
@@ -20,7 +19,7 @@ y: e.clientY - rect.top
 }
 }
 
-function posicaoTouch(e){
+function getPosTouch(e){
 const rect = canvas.getBoundingClientRect()
 const touch = e.touches[0]
 return {
@@ -32,8 +31,8 @@ y: touch.clientY - rect.top
 function iniciar(e){
 desenhando = true
 assinou = true
+const pos = getPosMouse(e)
 ctx.beginPath()
-const pos = posicaoMouse(e)
 ctx.moveTo(pos.x,pos.y)
 }
 
@@ -41,14 +40,14 @@ function iniciarTouch(e){
 e.preventDefault()
 desenhando = true
 assinou = true
+const pos = getPosTouch(e)
 ctx.beginPath()
-const pos = posicaoTouch(e)
 ctx.moveTo(pos.x,pos.y)
 }
 
 function desenhar(e){
 if(!desenhando) return
-const pos = posicaoMouse(e)
+const pos = getPosMouse(e)
 ctx.lineTo(pos.x,pos.y)
 ctx.stroke()
 }
@@ -56,7 +55,7 @@ ctx.stroke()
 function desenharTouch(e){
 e.preventDefault()
 if(!desenhando) return
-const pos = posicaoTouch(e)
+const pos = getPosTouch(e)
 ctx.lineTo(pos.x,pos.y)
 ctx.stroke()
 }
@@ -73,6 +72,24 @@ canvas.addEventListener("touchstart", iniciarTouch)
 canvas.addEventListener("touchmove", desenharTouch)
 canvas.addEventListener("touchend", parar)
 
+document.getElementById("limparAssinatura").addEventListener("click", function(){
+ctx.clearRect(0,0,canvas.width,canvas.height)
+assinou = false
+})
+
+const avariaSelect = document.getElementById("avaria")
+const campoAvaria = document.getElementById("campoAvaria")
+
+if(avariaSelect){
+avariaSelect.addEventListener("change", function(){
+if(this.value === "Sim"){
+campoAvaria.style.display = "block"
+}else{
+campoAvaria.style.display = "none"
+}
+})
+}
+
 form.addEventListener("submit", async function(e){
 
 e.preventDefault()
@@ -82,73 +99,19 @@ alert("Assinatura obrigatória!")
 return
 }
 
-document.getElementById("limparAssinatura").addEventListener("click", function(){
-ctx.clearRect(0,0,canvas.width,canvas.height)
-assinou = false
-})
-
-const dataHora = new Date().toLocaleString("pt-BR")
-
-const motorista = document.getElementById("motorista").value
-const placa = document.getElementById("placa").value
-const km = document.getElementById("km").value
-const combustivel = document.getElementById("combustivel").value
-const pneus = document.getElementById("pneus").value
-const iluminacao = document.getElementById("iluminacao").value
-const problemaLuz = document.getElementById("problemaLuz").value
-const avaria = document.getElementById("avaria").value
-const descricaoAvaria = document.getElementById("descricaoAvaria").value
-const observacoes = document.getElementById("observacoes").value
-
-const assinatura = canvas.toDataURL("image/png")
-
-let fotoAvariaBase64 = ""
-
-const fotoInput = document.getElementById("fotoAvaria")
-
-if(fotoInput.files.length > 0){
-
-const file = fotoInput.files[0]
-
-fotoAvariaBase64 = await new Promise((resolve)=>{
-
-const reader = new FileReader()
-
-reader.onload = () => resolve(reader.result)
-
-reader.readAsDataURL(file)
-
-})
-
-const avariaSelect = document.getElementById("avaria")
-const campoAvaria = document.getElementById("campoAvaria")
-
-avariaSelect.addEventListener("change", function(){
-
-if(this.value === "Sim"){
-campoAvaria.style.display = "block"
-}else{
-campoAvaria.style.display = "none"
-}
-
-})
-
-}
-
 const dados = {
-dataHora,
-motorista,
-placa,
-km,
-combustivel,
-pneus,
-iluminacao,
-problemaLuz,
-avaria,
-descricaoAvaria,
-observacoes,
-assinatura,
-fotoAvaria: fotoAvariaBase64
+dataHora: new Date().toLocaleString("pt-BR"),
+motorista: document.getElementById("motorista").value,
+placa: document.getElementById("placa").value,
+km: document.getElementById("km").value,
+combustivel: document.getElementById("combustivel").value,
+pneus: document.getElementById("pneus").value,
+iluminacao: document.getElementById("iluminacao").value,
+problemaLuz: document.getElementById("problemaLuz").value,
+avaria: document.getElementById("avaria").value,
+descricaoAvaria: document.getElementById("descricaoAvaria").value,
+observacoes: document.getElementById("observacoes").value,
+assinatura: canvas.toDataURL("image/png")
 }
 
 try{
@@ -158,19 +121,15 @@ method:"POST",
 body:JSON.stringify(dados)
 })
 
-alert("Checklist enviado com sucesso!")
-
+alert("Checklist enviado!")
 form.reset()
-
 ctx.clearRect(0,0,canvas.width,canvas.height)
-
 assinou = false
 
-}catch(error){
+}catch(err){
 
-alert("Erro ao enviar checklist")
-
-console.error(error)
+alert("Erro ao enviar para planilha")
+console.error(err)
 
 }
 
