@@ -1,136 +1,148 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbwbeMarnNVslGBkDA4kLpOMsXOpL-6OQmi0ur_nw8eZoQ_8zkwccdrlF0mA1pQlDyPw1g/exec"
+const URL_SCRIPT="https://script.google.com/macros/s/AKfycbwbeMarnNVslGBkDA4kLpOMsXOpL-6OQmi0ur_nw8eZoQ_8zkwccdrlF0mA1pQlDyPw1g/exec"
 
-const form = document.getElementById("formChecklist")
-const canvas = document.getElementById("assinatura")
-const ctx = canvas.getContext("2d")
+document.addEventListener("DOMContentLoaded",()=>{
 
-let desenhando = false
-let assinou = false
+const form=document.getElementById("checklistForm")
 
-ctx.lineWidth = 1
-ctx.lineCap = "round"
-ctx.strokeStyle = "black"
+const iluminacao=document.getElementById("iluminacao")
+const problemaLuz=document.getElementById("problemaLuz")
 
-function getPosMouse(e){
-const rect = canvas.getBoundingClientRect()
-return {
-x: e.clientX - rect.left,
-y: e.clientY - rect.top
-}
-}
+const tipoLuz=document.getElementById("tipoLuz")
+const outroProblema=document.getElementById("outroProblema")
 
-function getPosTouch(e){
-const rect = canvas.getBoundingClientRect()
-const touch = e.touches[0]
-return {
-x: touch.clientX - rect.left,
-y: touch.clientY - rect.top
-}
-}
+const avaria=document.getElementById("avaria")
+const campoAvaria=document.getElementById("campoAvaria")
 
-function iniciar(e){
-desenhando = true
-assinou = true
-const pos = getPosMouse(e)
+const foto=document.getElementById("foto")
+
+const canvas=document.getElementById("assinatura")
+const limpar=document.getElementById("limpar")
+
+const ctx=canvas.getContext("2d")
+
+let desenhando=false
+let assinou=false
+
+canvas.width=canvas.offsetWidth
+canvas.height=200
+
+canvas.addEventListener("mousedown",()=>{
+desenhando=true
+assinou=true
 ctx.beginPath()
-ctx.moveTo(pos.x,pos.y)
-}
+})
 
-function iniciarTouch(e){
-e.preventDefault()
-desenhando = true
-assinou = true
-const pos = getPosTouch(e)
-ctx.beginPath()
-ctx.moveTo(pos.x,pos.y)
-}
+canvas.addEventListener("mouseup",()=>desenhando=false)
 
-function desenhar(e){
-if(!desenhando) return
-const pos = getPosMouse(e)
-ctx.lineTo(pos.x,pos.y)
+canvas.addEventListener("mousemove",(e)=>{
+
+if(!desenhando)return
+
+const rect=canvas.getBoundingClientRect()
+
+ctx.lineTo(
+e.clientX-rect.left,
+e.clientY-rect.top
+)
+
 ctx.stroke()
-}
 
-function desenharTouch(e){
-e.preventDefault()
-if(!desenhando) return
-const pos = getPosTouch(e)
-ctx.lineTo(pos.x,pos.y)
-ctx.stroke()
-}
+})
 
-function parar(){
-desenhando = false
-}
-
-canvas.addEventListener("mousedown", iniciar)
-canvas.addEventListener("mousemove", desenhar)
-canvas.addEventListener("mouseup", parar)
-
-canvas.addEventListener("touchstart", iniciarTouch)
-canvas.addEventListener("touchmove", desenharTouch)
-canvas.addEventListener("touchend", parar)
-
-document.getElementById("limparAssinatura").addEventListener("click", function(){
+limpar.onclick=()=>{
 ctx.clearRect(0,0,canvas.width,canvas.height)
-assinou = false
-})
-
-const avariaSelect = document.getElementById("avaria")
-const campoAvaria = document.getElementById("campoAvaria")
-
-if(avariaSelect){
-avariaSelect.addEventListener("change", function(){
-if(this.value === "Sim"){
-campoAvaria.style.display = "block"
-}else{
-campoAvaria.style.display = "none"
-}
-})
+assinou=false
 }
 
-form.addEventListener("submit", async function(e){
+iluminacao.onchange=()=>{
+if(iluminacao.value==="problema")
+problemaLuz.classList.remove("hidden")
+else
+problemaLuz.classList.add("hidden")
+}
+
+tipoLuz.onchange=()=>{
+if(tipoLuz.value==="outro")
+outroProblema.classList.remove("hidden")
+else
+outroProblema.classList.add("hidden")
+}
+
+avaria.onchange=()=>{
+if(avaria.value==="sim")
+campoAvaria.classList.remove("hidden")
+else
+campoAvaria.classList.add("hidden")
+}
+
+form.addEventListener("submit",async(e)=>{
 
 e.preventDefault()
 
 if(!assinou){
-alert("Assinatura obrigatória!")
+alert("Assinatura obrigatória")
 return
 }
 
-const dados = {
-dataHora: new Date().toLocaleString("pt-BR"),
-motorista: document.getElementById("motorista").value,
-placa: document.getElementById("placa").value,
-km: document.getElementById("km").value,
-combustivel: document.getElementById("combustivel").value,
-pneus: document.getElementById("pneus").value,
-iluminacao: document.getElementById("iluminacao").value,
-problemaLuz: document.getElementById("problemaLuz").value,
-avaria: document.getElementById("avaria").value,
-descricaoAvaria: document.getElementById("descricaoAvaria").value,
-observacoes: document.getElementById("observacoes").value,
-assinatura: canvas.toDataURL("image/png")
-}
+let fotoBase64=""
 
-try{
+const file=foto.files[0]
 
-await fetch(scriptURL,{
-method:"POST",
-body:JSON.stringify(dados)
+if(file){
+
+const reader=new FileReader()
+
+fotoBase64=await new Promise(resolve=>{
+reader.onload=()=>resolve(reader.result)
+reader.readAsDataURL(file)
 })
 
-alert("Checklist enviado!")
-form.reset()
-ctx.clearRect(0,0,canvas.width,canvas.height)
-assinou = false
+}
 
-}catch(err){
+let problemaFinal=tipoLuz.value
 
-alert("Erro ao enviar para planilha")
-console.error(err)
+if(tipoLuz.value==="outro")
+problemaFinal=outroProblema.value
+
+const assinaturaBase64=canvas.toDataURL()
+
+const dados={
+
+motorista:document.getElementById("motorista").value,
+placa:document.getElementById("placa").value,
+km:document.getElementById("km").value,
+combustivel:document.getElementById("combustivel").value,
+pneus:document.getElementById("pneus").value,
+iluminacao:iluminacao.value,
+problemaLuz:problemaFinal,
+avaria:avaria.value,
+descricaoAvaria:document.getElementById("descricaoAvaria").value,
+observacoes:document.getElementById("observacoes").value,
+fotoAvaria:fotoBase64,
+assinatura:assinaturaBase64
 
 }
+
+const formData = new FormData()
+
+for (const chave in dados){
+formData.append(chave, dados[chave])
+}
+
+await fetch(URL_SCRIPT,{
+method:"POST",
+mode:"no-cors",
+body:formData
+})
+
+alert("Checklist enviado com sucesso!")
+
+form.reset()
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+assinou=false
+
+})
 
 })
