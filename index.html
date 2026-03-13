@@ -1,41 +1,31 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Checklist de Veículo - Comtrasil</title>
-
+<title>Checklist de Veículo</title>
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
 <div class="container">
 
-<header>
-
-<img src="logo.png" class="logo">
-
-<h1>Checklist de Inspeção de Veículo</h1>
-
-</header>
+<h1>Checklist de Veículo</h1>
 
 <form id="checklistForm">
 
-<label>Nome Completo</label>
+<label>Nome do Motorista</label>
 <input type="text" id="motorista" required>
 
-<label>Placa do Veículo</label>
+<label>Placa</label>
 <input type="text" id="placa" required>
 
-<label>KM Atual</label>
+<label>KM</label>
 <input type="number" id="km" required>
 
-<label>Nível de Combustível</label>
+<label>Combustível</label>
 <select id="combustivel">
 <option>Cheio</option>
 <option>3/4</option>
@@ -44,14 +34,14 @@
 <option>Reserva</option>
 </select>
 
-<label>Estado dos Pneus</label>
+<label>Pneus</label>
 <select id="pneus">
 <option>Bom</option>
 <option>Regular</option>
 <option>Ruim</option>
 </select>
 
-<label>Limpeza Interna</label>
+<label>Limpeza</label>
 <select id="limpeza">
 <option>Limpo</option>
 <option>Regular</option>
@@ -65,54 +55,29 @@
 </select>
 
 <div id="problemaLuz" class="hidden">
-
-<label>Onde está o problema?</label>
-
-<select id="tipoLuz">
-<option>Farol</option>
-<option>Luz de Freio</option>
-<option>Seta</option>
-<option>Luz de Ré</option>
-<option value="outro">Outro</option>
-</select>
-
-<input type="text" id="outroProblema" class="hidden" placeholder="Descreva o problema">
-
+<label>Problema na luz</label>
+<input type="text" id="problemaTexto">
 </div>
 
-<label>Existe alguma avaria?</label>
-
+<label>Avaria</label>
 <select id="avaria">
 <option value="nao">Não</option>
 <option value="sim">Sim</option>
 </select>
-<div id="campoAvaria" style="display:none">
 
-<label>Foto da Avaria</label>
-<input type="file" id="foto" accept="image/*">
-
-<img id="preview" class="hidden">
-
-<label>Descrição da Avaria</label>
-<textarea id="descricaoAvaria"></textarea>
-
+<div id="campoAvaria" class="hidden">
+<label>Foto</label>
+<input type="file" id="foto">
 </div>
 
-<label>Observações</label>
-<textarea id="observacoes"></textarea>
-
-<label>Assinatura do Motorista</label>
-
+<label>Assinatura</label>
 <canvas id="assinatura"></canvas>
-<button type="button" id="limparAssinatura">
-Limpar assinatura
-</button>
 
-<button type="submit">Enviar Checklist</button>
+<button type="button" id="limpar">Limpar assinatura</button>
 
-<p id="mensagem" class="hidden">
-✅ Checklist enviado com sucesso!
-</p>
+<button type="submit">Enviar</button>
+
+<p id="mensagem" class="hidden">Checklist enviado!</p>
 
 </form>
 
@@ -122,3 +87,4 @@ Limpar assinatura
 
 </body>
 </html>
+
