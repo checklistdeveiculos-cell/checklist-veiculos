@@ -7,9 +7,10 @@ const ctx = canvas.getContext("2d")
 let desenhando = false
 let assinou = false
 
-ctx.lineWidth = 2
+ctx.lineWidth = 1
 ctx.lineCap = "round"
 ctx.strokeStyle = "black"
+
 
 function posicaoMouse(e){
 const rect = canvas.getBoundingClientRect()
@@ -81,6 +82,11 @@ alert("Assinatura obrigatória!")
 return
 }
 
+document.getElementById("limparAssinatura").addEventListener("click", function(){
+ctx.clearRect(0,0,canvas.width,canvas.height)
+assinou = false
+})
+
 const dataHora = new Date().toLocaleString("pt-BR")
 
 const motorista = document.getElementById("motorista").value
@@ -111,6 +117,19 @@ const reader = new FileReader()
 reader.onload = () => resolve(reader.result)
 
 reader.readAsDataURL(file)
+
+})
+
+const avariaSelect = document.getElementById("avaria")
+const campoAvaria = document.getElementById("campoAvaria")
+
+avariaSelect.addEventListener("change", function(){
+
+if(this.value === "Sim"){
+campoAvaria.style.display = "block"
+}else{
+campoAvaria.style.display = "none"
+}
 
 })
 
