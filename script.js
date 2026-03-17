@@ -33,7 +33,7 @@ avaria.onchange=()=>{
 campoAvaria.classList.toggle("hidden", avaria.value !== "sim")
 }
 
-/*SISTEMA DE FOTOS COM REMOÇÃO */
+/* FOTOS COM REMOÇÃO */
 
 const inputFotos = document.getElementById("foto")
 const preview = document.getElementById("previewFotos")
@@ -74,11 +74,11 @@ preview.appendChild(div)
 reader.readAsDataURL(file)
 }
 
-inputFotos.value = "" 
+inputFotos.value = ""
 
 })
 
-/*ASSINATURA */
+/*ASSINATURA PERFEITA */
 
 const canvas=document.getElementById("assinatura")
 const ctx=canvas.getContext("2d")
@@ -88,55 +88,74 @@ canvas.height=200
 
 ctx.lineWidth = 2
 ctx.lineCap = "round"
+ctx.lineJoin = "round"
 
 let desenhando=false
 let assinou=false
 
-canvas.addEventListener("mousedown",(e)=>{
+function getPos(e){
+const rect = canvas.getBoundingClientRect()
+
+if(e.touches){
+return {
+x: e.touches[0].clientX - rect.left,
+y: e.touches[0].clientY - rect.top
+}
+}
+
+return {
+x: e.offsetX,
+y: e.offsetY
+}
+}
+
+// INÍCIO
+function start(e){
 desenhando=true
 assinou=true
+
+const pos=getPos(e)
 ctx.beginPath()
-ctx.moveTo(e.offsetX,e.offsetY)
-})
+ctx.moveTo(pos.x,pos.y)
 
-canvas.addEventListener("mousemove",(e)=>{
-if(!desenhando)return
-ctx.lineTo(e.offsetX,e.offsetY)
+if(e.cancelable) e.preventDefault()
+}
+
+// DESENHO SUAVE
+function draw(e){
+if(!desenhando) return
+
+const pos=getPos(e)
+
+ctx.lineTo(pos.x,pos.y)
 ctx.stroke()
-})
 
-canvas.addEventListener("mouseup",()=>desenhando=false)
-canvas.addEventListener("mouseleave",()=>desenhando=false)
+if(e.cancelable) e.preventDefault()
+}
 
-canvas.addEventListener("touchstart",(e)=>{
-const rect=canvas.getBoundingClientRect()
-const t=e.touches[0]
+// FIM
+function end(){
+desenhando=false
+}
 
-desenhando=true
-assinou=true
+// MOUSE
+canvas.addEventListener("mousedown",start)
+canvas.addEventListener("mousemove",draw)
+canvas.addEventListener("mouseup",end)
+canvas.addEventListener("mouseleave",end)
 
-ctx.beginPath()
-ctx.moveTo(t.clientX-rect.left,t.clientY-rect.top)
-})
+// TOUCH 
+canvas.addEventListener("touchstart",start,{ passive:false })
+canvas.addEventListener("touchmove",draw,{ passive:false })
+canvas.addEventListener("touchend",end)
 
-canvas.addEventListener("touchmove",(e)=>{
-if(!desenhando)return
-
-const rect=canvas.getBoundingClientRect()
-const t=e.touches[0]
-
-ctx.lineTo(t.clientX-rect.left,t.clientY-rect.top)
-ctx.stroke()
-})
-
-canvas.addEventListener("touchend",()=>desenhando=false)
-
+// LIMPAR
 document.getElementById("limpar").onclick=()=>{
 ctx.clearRect(0,0,canvas.width,canvas.height)
 assinou=false
 }
 
-/*ENVIO */
+/*ENVIO*/
 
 form.addEventListener("submit",async(e)=>{
 
@@ -187,7 +206,6 @@ alert("Checklist enviado!")
 
 form.reset()
 ctx.clearRect(0,0,canvas.width,canvas.height)
-
 preview.innerHTML=""
 arquivosSelecionados=[]
 
@@ -200,7 +218,7 @@ alert("Erro ao enviar")
 
 })
 
-/*REDUZ IMAGEM */
+/*REDUZ IMAGEM*/
 
 function reduzirImagem(file){
 return new Promise((resolve)=>{
