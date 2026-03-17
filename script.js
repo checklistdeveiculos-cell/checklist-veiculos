@@ -227,7 +227,7 @@ img.onload=function(){
 const canvas=document.createElement("canvas")
 const ctx=canvas.getContext("2d")
 
-const maxWidth=300
+const maxWidth=400
 
 let width=img.width
 let height=img.height
@@ -242,7 +242,7 @@ canvas.height=height
 
 ctx.drawImage(img,0,0,width,height)
 
-resolve(canvas.toDataURL("image/jpeg",0.3))
+resolve(canvas.toDataURL("image/jpeg",0.4))
 
 }
 
