@@ -33,8 +33,6 @@ avaria.onchange=()=>{
 campoAvaria.classList.toggle("hidden", avaria.value !== "sim")
 }
 
-/*FOTOS COM REMOÇÃO */
-
 const inputFotos = document.getElementById("foto")
 const preview = document.getElementById("previewFotos")
 
@@ -45,7 +43,6 @@ inputFotos.addEventListener("change",(e)=>{
 for(let file of e.target.files){
 
 if(arquivosSelecionados.length >= 5){
-alert("Máximo de 5 fotos")
 break
 }
 
@@ -62,7 +59,7 @@ const img = document.createElement("img")
 img.src = ev.target.result
 
 const btn = document.createElement("button")
-btn.innerText = "✕"
+btn.innerText = "x"
 btn.classList.add("remover")
 
 btn.onclick = ()=>{
@@ -82,8 +79,6 @@ reader.readAsDataURL(file)
 inputFotos.value = ""
 
 })
-
-/*ASSINATURA */
 
 const canvas=document.getElementById("assinatura")
 const ctx=canvas.getContext("2d")
@@ -154,8 +149,6 @@ ctx.clearRect(0,0,canvas.width,canvas.height)
 assinou=false
 }
 
-/*ENVIO */
-
 form.addEventListener("submit",async(e)=>{
 
 e.preventDefault()
@@ -169,12 +162,9 @@ loading.classList.remove("hidden")
 
 try{
 
-let fotos=[]
-
-for(let file of arquivosSelecionados){
-const base64=await reduzirImagem(file)
-fotos.push(base64)
-}
+const fotos = await Promise.all(
+arquivosSelecionados.map(file => reduzirImagem(file))
+)
 
 let cidadeFinal=cidade.value === "outro" ? cidadeOutro.value : cidade.value
 let problemaFinal=tipoLuz.value === "outro" ? outroProblema.value : tipoLuz.value
@@ -195,10 +185,15 @@ assinatura:canvas.toDataURL(),
 fotos:fotos
 }
 
-await fetch(URL_SCRIPT,{
+await Promise.race([
+fetch(URL_SCRIPT,{
 method:"POST",
 body:JSON.stringify(dados)
-})
+}),
+new Promise((_, reject)=>
+setTimeout(()=>reject("timeout"),20000)
+)
+])
 
 loading.classList.add("hidden")
 alert("Checklist enviado!")
@@ -217,8 +212,6 @@ alert("Erro ao enviar")
 
 })
 
-
-
 function reduzirImagem(file){
 return new Promise((resolve)=>{
 
@@ -234,7 +227,7 @@ img.onload=function(){
 const canvas=document.createElement("canvas")
 const ctx=canvas.getContext("2d")
 
-const maxWidth=400 
+const maxWidth=300
 
 let width=img.width
 let height=img.height
@@ -249,7 +242,7 @@ canvas.height=height
 
 ctx.drawImage(img,0,0,width,height)
 
-resolve(canvas.toDataURL("image/jpeg",0.4))
+resolve(canvas.toDataURL("image/jpeg",0.3))
 
 }
 
