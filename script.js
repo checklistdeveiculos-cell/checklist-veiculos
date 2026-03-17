@@ -33,7 +33,58 @@ avaria.onchange=()=>{
 campoAvaria.classList.toggle("hidden", avaria.value !== "sim")
 }
 
-/* ✍️ ASSINATURA MELHORADA */
+/*FOTOS */
+
+const inputFotos = document.getElementById("foto")
+const btnFoto = document.getElementById("btnFoto")
+const preview = document.getElementById("previewFotos")
+
+let arquivosSelecionados = []
+
+btnFoto.onclick = () => {
+inputFotos.click()
+}
+
+inputFotos.addEventListener("change", (e)=>{
+
+for(let file of e.target.files){
+
+arquivosSelecionados.push(file)
+
+const reader = new FileReader()
+
+reader.onload = function(ev){
+
+const div = document.createElement("div")
+div.classList.add("preview-item")
+
+const img = document.createElement("img")
+img.src = ev.target.result
+
+const btnRemover = document.createElement("button")
+btnRemover.innerText = "x"
+btnRemover.classList.add("remove-btn")
+
+btnRemover.onclick = ()=>{
+preview.removeChild(div)
+arquivosSelecionados = arquivosSelecionados.filter(f => f !== file)
+}
+
+div.appendChild(img)
+div.appendChild(btnRemover)
+preview.appendChild(div)
+
+}
+
+reader.readAsDataURL(file)
+
+}
+
+inputFotos.value = "" 
+
+})
+
+/*ASSINATURA */
 
 const canvas=document.getElementById("assinatura")
 const ctx=canvas.getContext("2d")
@@ -78,13 +129,10 @@ lastY=pos.y
 function draw(e){
 
 if(!desenhando) return
-
-// ⚠️ só desenha se estiver realmente tocando (evita bug de scroll)
 if(e.touches && e.touches.length === 0) return
 
 const pos=getPos(e)
 
-// suavização
 ctx.beginPath()
 ctx.moveTo(lastX, lastY)
 ctx.lineTo(pos.x, pos.y)
@@ -114,7 +162,7 @@ ctx.clearRect(0,0,canvas.width,canvas.height)
 assinou=false
 }
 
-/* 🚀 ENVIO */
+/*ENVIO */
 
 form.addEventListener("submit",async(e)=>{
 
@@ -129,11 +177,10 @@ loading.classList.remove("hidden")
 
 try{
 
-const inputFotos = document.getElementById("foto")
 let fotos=[]
 
-for(let i=0;i<inputFotos.files.length;i++){
-const base64=await reduzirImagem(inputFotos.files[i])
+for(let file of arquivosSelecionados){
+const base64=await reduzirImagem(file)
 fotos.push(base64)
 }
 
@@ -166,6 +213,8 @@ alert("Checklist enviado!")
 
 form.reset()
 ctx.clearRect(0,0,canvas.width,canvas.height)
+preview.innerHTML = ""
+arquivosSelecionados = []
 
 }catch(err){
 loading.classList.add("hidden")
@@ -176,7 +225,7 @@ alert("Erro ao enviar")
 
 })
 
-/* 📸 REDUZ IMAGEM */
+/*REDUZ IMAGEM */
 
 function reduzirImagem(file){
 return new Promise((resolve)=>{
