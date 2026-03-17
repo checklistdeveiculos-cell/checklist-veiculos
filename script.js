@@ -9,47 +9,31 @@ const cidade=document.getElementById("cidade")
 const cidadeOutro=document.getElementById("cidadeOutro")
 
 cidade.onchange=()=>{
-if(cidade.value==="outro"){
-cidadeOutro.classList.remove("hidden")
-}else{
-cidadeOutro.classList.add("hidden")
-}
+cidadeOutro.classList.toggle("hidden", cidade.value !== "outro")
 }
 
 const iluminacao=document.getElementById("iluminacao")
 const problemaDiv=document.getElementById("problemaLuzDiv")
 
 iluminacao.onchange=()=>{
-if(iluminacao.value==="problema"){
-problemaDiv.classList.remove("hidden")
-}else{
-problemaDiv.classList.add("hidden")
-}
+problemaDiv.classList.toggle("hidden", iluminacao.value !== "problema")
 }
 
 const tipoLuz=document.getElementById("tipoLuz")
 const outroProblema=document.getElementById("outroProblema")
 
 tipoLuz.onchange=()=>{
-if(tipoLuz.value==="outro"){
-outroProblema.classList.remove("hidden")
-}else{
-outroProblema.classList.add("hidden")
-}
+outroProblema.classList.toggle("hidden", tipoLuz.value !== "outro")
 }
 
 const avaria=document.getElementById("avaria")
 const campoAvaria=document.getElementById("campoAvaria")
 
 avaria.onchange=()=>{
-if(avaria.value==="sim"){
-campoAvaria.classList.remove("hidden")
-}else{
-campoAvaria.classList.add("hidden")
-}
+campoAvaria.classList.toggle("hidden", avaria.value !== "sim")
 }
 
-/* ASSINATURA */
+/* ✍️ ASSINATURA MELHORADA */
 
 const canvas=document.getElementById("assinatura")
 const ctx=canvas.getContext("2d")
@@ -57,59 +41,80 @@ const ctx=canvas.getContext("2d")
 canvas.width=canvas.offsetWidth
 canvas.height=200
 
+ctx.lineWidth = 2
+ctx.lineCap = "round"
+ctx.lineJoin = "round"
+
 let desenhando=false
 let assinou=false
+let lastX=0
+let lastY=0
 
-canvas.addEventListener("mousedown",start)
-canvas.addEventListener("mousemove",draw)
-canvas.addEventListener("mouseup",end)
+function getPos(e){
+const rect=canvas.getBoundingClientRect()
 
-canvas.addEventListener("touchstart",startTouch)
-canvas.addEventListener("touchmove",drawTouch)
-canvas.addEventListener("touchend",end)
+if(e.touches){
+return {
+x: e.touches[0].clientX - rect.left,
+y: e.touches[0].clientY - rect.top
+}
+}
+
+return {
+x: e.offsetX,
+y: e.offsetY
+}
+}
 
 function start(e){
 desenhando=true
 assinou=true
-ctx.beginPath()
-ctx.moveTo(e.offsetX,e.offsetY)
+
+const pos=getPos(e)
+lastX=pos.x
+lastY=pos.y
 }
 
 function draw(e){
-if(!desenhando)return
-ctx.lineTo(e.offsetX,e.offsetY)
-ctx.stroke()
-}
 
-function startTouch(e){
-e.preventDefault()
-desenhando=true
-assinou=true
-const rect=canvas.getBoundingClientRect()
-const t=e.touches[0]
+if(!desenhando) return
+
+// ⚠️ só desenha se estiver realmente tocando (evita bug de scroll)
+if(e.touches && e.touches.length === 0) return
+
+const pos=getPos(e)
+
+// suavização
 ctx.beginPath()
-ctx.moveTo(t.clientX-rect.left,t.clientY-rect.top)
-}
-
-function drawTouch(e){
-e.preventDefault()
-if(!desenhando)return
-const rect=canvas.getBoundingClientRect()
-const t=e.touches[0]
-ctx.lineTo(t.clientX-rect.left,t.clientY-rect.top)
+ctx.moveTo(lastX, lastY)
+ctx.lineTo(pos.x, pos.y)
 ctx.stroke()
+
+lastX=pos.x
+lastY=pos.y
+
+if(e.cancelable) e.preventDefault()
 }
 
 function end(){
 desenhando=false
 }
 
+canvas.addEventListener("mousedown",start)
+canvas.addEventListener("mousemove",draw)
+canvas.addEventListener("mouseup",end)
+canvas.addEventListener("mouseleave",end)
+
+canvas.addEventListener("touchstart",start, {passive:false})
+canvas.addEventListener("touchmove",draw, {passive:false})
+canvas.addEventListener("touchend",end)
+
 document.getElementById("limpar").onclick=()=>{
 ctx.clearRect(0,0,canvas.width,canvas.height)
 assinou=false
 }
 
-/* ENVIO */
+/* 🚀 ENVIO */
 
 form.addEventListener("submit",async(e)=>{
 
@@ -127,27 +132,13 @@ try{
 const inputFotos = document.getElementById("foto")
 let fotos=[]
 
-if(inputFotos.files.length > 0){
-
 for(let i=0;i<inputFotos.files.length;i++){
-
-const file=inputFotos.files[i]
-const base64=await reduzirImagem(file)
+const base64=await reduzirImagem(inputFotos.files[i])
 fotos.push(base64)
-
 }
 
-}
-
-let cidadeFinal=cidade.value
-if(cidade.value==="outro"){
-cidadeFinal=cidadeOutro.value
-}
-
-let problemaFinal=tipoLuz.value
-if(tipoLuz.value==="outro"){
-problemaFinal=outroProblema.value
-}
+let cidadeFinal=cidade.value === "outro" ? cidadeOutro.value : cidade.value
+let problemaFinal=tipoLuz.value === "outro" ? outroProblema.value : tipoLuz.value
 
 const dados={
 motorista:document.getElementById("motorista").value,
@@ -185,10 +176,9 @@ alert("Erro ao enviar")
 
 })
 
-/* REDUZ IMAGEM (ESSENCIAL PRA NÃO TRAVAR) */
+/* 📸 REDUZ IMAGEM */
 
 function reduzirImagem(file){
-
 return new Promise((resolve)=>{
 
 const reader=new FileReader()
@@ -227,5 +217,4 @@ resolve(canvas.toDataURL("image/jpeg",0.7))
 reader.readAsDataURL(file)
 
 })
-
 }
