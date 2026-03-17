@@ -33,19 +33,14 @@ avaria.onchange=()=>{
 campoAvaria.classList.toggle("hidden", avaria.value !== "sim")
 }
 
-/*FOTOS */
+/*SISTEMA DE FOTOS COM REMOÇÃO */
 
 const inputFotos = document.getElementById("foto")
-const btnFoto = document.getElementById("btnFoto")
 const preview = document.getElementById("previewFotos")
 
 let arquivosSelecionados = []
 
-btnFoto.onclick = () => {
-inputFotos.click()
-}
-
-inputFotos.addEventListener("change", (e)=>{
+inputFotos.addEventListener("change",(e)=>{
 
 for(let file of e.target.files){
 
@@ -61,23 +56,22 @@ div.classList.add("preview-item")
 const img = document.createElement("img")
 img.src = ev.target.result
 
-const btnRemover = document.createElement("button")
-btnRemover.innerText = "x"
-btnRemover.classList.add("remove-btn")
+const btn = document.createElement("button")
+btn.innerText = "✕"
+btn.classList.add("remover")
 
-btnRemover.onclick = ()=>{
+btn.onclick = ()=>{
 preview.removeChild(div)
 arquivosSelecionados = arquivosSelecionados.filter(f => f !== file)
 }
 
 div.appendChild(img)
-div.appendChild(btnRemover)
+div.appendChild(btn)
 preview.appendChild(div)
 
 }
 
 reader.readAsDataURL(file)
-
 }
 
 inputFotos.value = "" 
@@ -94,68 +88,48 @@ canvas.height=200
 
 ctx.lineWidth = 2
 ctx.lineCap = "round"
-ctx.lineJoin = "round"
 
 let desenhando=false
 let assinou=false
-let lastX=0
-let lastY=0
 
-function getPos(e){
+canvas.addEventListener("mousedown",(e)=>{
+desenhando=true
+assinou=true
+ctx.beginPath()
+ctx.moveTo(e.offsetX,e.offsetY)
+})
+
+canvas.addEventListener("mousemove",(e)=>{
+if(!desenhando)return
+ctx.lineTo(e.offsetX,e.offsetY)
+ctx.stroke()
+})
+
+canvas.addEventListener("mouseup",()=>desenhando=false)
+canvas.addEventListener("mouseleave",()=>desenhando=false)
+
+canvas.addEventListener("touchstart",(e)=>{
 const rect=canvas.getBoundingClientRect()
+const t=e.touches[0]
 
-if(e.touches){
-return {
-x: e.touches[0].clientX - rect.left,
-y: e.touches[0].clientY - rect.top
-}
-}
-
-return {
-x: e.offsetX,
-y: e.offsetY
-}
-}
-
-function start(e){
 desenhando=true
 assinou=true
 
-const pos=getPos(e)
-lastX=pos.x
-lastY=pos.y
-}
-
-function draw(e){
-
-if(!desenhando) return
-if(e.touches && e.touches.length === 0) return
-
-const pos=getPos(e)
-
 ctx.beginPath()
-ctx.moveTo(lastX, lastY)
-ctx.lineTo(pos.x, pos.y)
+ctx.moveTo(t.clientX-rect.left,t.clientY-rect.top)
+})
+
+canvas.addEventListener("touchmove",(e)=>{
+if(!desenhando)return
+
+const rect=canvas.getBoundingClientRect()
+const t=e.touches[0]
+
+ctx.lineTo(t.clientX-rect.left,t.clientY-rect.top)
 ctx.stroke()
+})
 
-lastX=pos.x
-lastY=pos.y
-
-if(e.cancelable) e.preventDefault()
-}
-
-function end(){
-desenhando=false
-}
-
-canvas.addEventListener("mousedown",start)
-canvas.addEventListener("mousemove",draw)
-canvas.addEventListener("mouseup",end)
-canvas.addEventListener("mouseleave",end)
-
-canvas.addEventListener("touchstart",start, {passive:false})
-canvas.addEventListener("touchmove",draw, {passive:false})
-canvas.addEventListener("touchend",end)
+canvas.addEventListener("touchend",()=>desenhando=false)
 
 document.getElementById("limpar").onclick=()=>{
 ctx.clearRect(0,0,canvas.width,canvas.height)
@@ -213,8 +187,9 @@ alert("Checklist enviado!")
 
 form.reset()
 ctx.clearRect(0,0,canvas.width,canvas.height)
-preview.innerHTML = ""
-arquivosSelecionados = []
+
+preview.innerHTML=""
+arquivosSelecionados=[]
 
 }catch(err){
 loading.classList.add("hidden")
