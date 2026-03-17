@@ -33,7 +33,7 @@ avaria.onchange=()=>{
 campoAvaria.classList.toggle("hidden", avaria.value !== "sim")
 }
 
-/* FOTOS COM REMOÇÃO */
+/*FOTOS COM REMOÇÃO */
 
 const inputFotos = document.getElementById("foto")
 const preview = document.getElementById("previewFotos")
@@ -43,6 +43,11 @@ let arquivosSelecionados = []
 inputFotos.addEventListener("change",(e)=>{
 
 for(let file of e.target.files){
+
+if(arquivosSelecionados.length >= 5){
+alert("Máximo de 5 fotos")
+break
+}
 
 arquivosSelecionados.push(file)
 
@@ -78,7 +83,7 @@ inputFotos.value = ""
 
 })
 
-/*ASSINATURA PERFEITA */
+/*ASSINATURA */
 
 const canvas=document.getElementById("assinatura")
 const ctx=canvas.getContext("2d")
@@ -109,7 +114,6 @@ y: e.offsetY
 }
 }
 
-// INÍCIO
 function start(e){
 desenhando=true
 assinou=true
@@ -121,7 +125,6 @@ ctx.moveTo(pos.x,pos.y)
 if(e.cancelable) e.preventDefault()
 }
 
-// DESENHO SUAVE
 function draw(e){
 if(!desenhando) return
 
@@ -133,29 +136,25 @@ ctx.stroke()
 if(e.cancelable) e.preventDefault()
 }
 
-// FIM
 function end(){
 desenhando=false
 }
 
-// MOUSE
 canvas.addEventListener("mousedown",start)
 canvas.addEventListener("mousemove",draw)
 canvas.addEventListener("mouseup",end)
 canvas.addEventListener("mouseleave",end)
 
-// TOUCH 
 canvas.addEventListener("touchstart",start,{ passive:false })
 canvas.addEventListener("touchmove",draw,{ passive:false })
 canvas.addEventListener("touchend",end)
 
-// LIMPAR
 document.getElementById("limpar").onclick=()=>{
 ctx.clearRect(0,0,canvas.width,canvas.height)
 assinou=false
 }
 
-/*ENVIO*/
+/*ENVIO */
 
 form.addEventListener("submit",async(e)=>{
 
@@ -218,7 +217,7 @@ alert("Erro ao enviar")
 
 })
 
-/*REDUZ IMAGEM*/
+
 
 function reduzirImagem(file){
 return new Promise((resolve)=>{
@@ -235,7 +234,7 @@ img.onload=function(){
 const canvas=document.createElement("canvas")
 const ctx=canvas.getContext("2d")
 
-const maxWidth=800
+const maxWidth=400 
 
 let width=img.width
 let height=img.height
@@ -250,7 +249,7 @@ canvas.height=height
 
 ctx.drawImage(img,0,0,width,height)
 
-resolve(canvas.toDataURL("image/jpeg",0.7))
+resolve(canvas.toDataURL("image/jpeg",0.4))
 
 }
 
