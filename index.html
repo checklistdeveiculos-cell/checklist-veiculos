@@ -9,128 +9,178 @@
 
 <body>
 
+<div id="offlineBanner" class="offline-banner hidden">
+  📵 Sem internet — o checklist será enviado automaticamente quando a conexão voltar.
+</div>
+
+<div id="pendingBanner" class="pending-banner hidden">
+  📋 <span id="pendingCount"></span> checklist(s) salvo(s) aguardando envio.
+  <button type="button" id="btnEnviarPendentes">Enviar agora</button>
+</div>
+
 <div class="container">
 
-<header>
-<img src="logo.png" class="logo">
-<h1>Checklist de Inspeção de Veículo</h1>
-</header>
+  <header>
+    <img src="logo.png" class="logo" alt="Logo Comtrasil">
+    <h1>Checklist de Inspeção de Veículo</h1>
+  </header>
 
-<form id="checklistForm">
+  <form id="checklistForm">
 
-<label for="motorista">Nome do Motorista</label>
-<input type="text" id="motorista" required>
+    <div class="section">
+      <div class="section-title">👤 Identificação</div>
 
-<label for="placa">Placa</label>
-<input type="text" id="placa" required>
+      <label for="motorista">Nome do Motorista</label>
+      <input type="text" id="motorista" required placeholder="Nome completo">
 
-<label for="km">KM Atual</label>
-<input type="number" id="km" required>
+      <label for="placa">Placa</label>
+      <div id="loadingPlacas" class="info-box">Carregando placas...</div>
+      <select id="placa" required>
+        <option value="">Selecione</option>
+      </select>
 
-<label for="cidade">Cidade / Filial</label>
-<select id="cidade" required>
-<option value="">Selecione</option>
-<option>Brumado/BA (Matriz)</option>
-<option>Maceió/AL</option>
-<option>Camaçari/BA</option>
-<option>Candeias/BA</option>
-<option>Fortaleza/CE</option>
-<option>Viana/ES</option>
-<option>Goiânia/GO</option>
-<option>Timóteo/MG</option>
-<option>Juiz de Fora/MG</option>
-<option>Santa Luzia/MG</option>
-<option>Ouro Branco/MG</option>
-<option>Vitória da Conquista/BA</option>
-<option>Marabá/PA</option>
-<option>Recife/PE</option>
-<option>João Pessoa/PB</option>
-<option>Sapucaia/RJ</option>
-<option>Porto Alegre/RS</option>
-<option>Araquari/SC</option>
-<option>Nossa Senhora do Socorro/SE</option>
-<option>Sumaré/SP</option>
-<option>Piracicaba/SP</option>
-<option>Pindamonhangaba/SP</option>
-<option value="outro">Outro</option>
-</select>
+      <input type="text" id="placaOutro" class="hidden" placeholder="Digite a placa">
 
-<input type="text" id="cidadeOutro" class="hidden" placeholder="Digite a cidade">
+      <div id="infoVeiculo" class="hidden veiculo-info">
+        <div class="veiculo-grid">
+          <div>
+            <label for="fabricante">Fabricante</label>
+            <input type="text" id="fabricante" placeholder="Fabricante">
+          </div>
+          <div>
+            <label for="modelo">Modelo</label>
+            <input type="text" id="modelo" placeholder="Modelo">
+          </div>
+        </div>
+      </div>
 
-<label for="combustivel">Combustível</label>
-<select id="combustivel">
-<option>Cheio</option>
-<option>3/4</option>
-<option>Meio</option>
-<option>1/4</option>
-<option>Reserva</option>
-</select>
+      <div id="descricaoVeiculoDiv" class="hidden">
+        <label for="descricaoVeiculo">Descrição do Veículo</label>
+        <textarea id="descricaoVeiculo" placeholder="Descreva o veículo (ex: caminhão baú branco)"></textarea>
+      </div>
 
-<label for="pneus">Estado dos Pneus</label>
-<select id="pneus">
-<option>Bom</option>
-<option>Regular</option>
-<option>Ruim</option>
-</select>
+      <label for="km">KM Atual</label>
+      <input type="number" id="km" required placeholder="Ex: 24500">
 
-<label for="iluminacao">Iluminação</label>
-<select id="iluminacao">
-<option value="ok">OK</option>
-<option value="problema">Problema</option>
-</select>
+      <label for="cidade">Cidade / Filial</label>
+      <select id="cidade" required>
+        <option value="">Selecione</option>
+        <option>Brumado/BA (Matriz)</option>
+        <option>Maceió/AL</option>
+        <option>Camaçari/BA</option>
+        <option>Candeias/BA</option>
+        <option>Fortaleza/CE</option>
+        <option>Viana/ES</option>
+        <option>Goiânia/GO</option>
+        <option>Timóteo/MG</option>
+        <option>Juiz de Fora/MG</option>
+        <option>Santa Luzia/MG</option>
+        <option>Ouro Branco/MG</option>
+        <option>Vitória da Conquista/BA</option>
+        <option>Marabá/PA</option>
+        <option>Recife/PE</option>
+        <option>João Pessoa/PB</option>
+        <option>Sapucaia/RJ</option>
+        <option>Porto Alegre/RS</option>
+        <option>Araquari/SC</option>
+        <option>Nossa Senhora do Socorro/SE</option>
+        <option>Sumaré/SP</option>
+        <option>Piracicaba/SP</option>
+        <option>Pindamonhangaba/SP</option>
+        <option value="outro">Outro</option>
+      </select>
+      <input type="text" id="cidadeOutro" class="hidden" placeholder="Digite a cidade">
+    </div>
 
-<div id="problemaLuzDiv" class="hidden">
-<label>Qual problema?</label>
-<select id="tipoLuz">
-<option>Farol</option>
-<option>Luz de Freio</option>
-<option>Seta</option>
-<option>Luz de Ré</option>
-<option value="outro">Outro</option>
-</select>
+    <div class="section">
+      <div class="section-title">🔧 Condições do Veículo</div>
 
-<input type="text" id="outroProblema" class="hidden" placeholder="Descreva o problema">
-</div>
+      <label for="combustivel">Combustível</label>
+      <select id="combustivel">
+        <option>Cheio</option>
+        <option>3/4</option>
+        <option>Meio</option>
+        <option>1/4</option>
+        <option>Reserva</option>
+      </select>
 
-<label for="avaria">Existe avaria?</label>
-<select id="avaria">
-<option value="nao">Não</option>
-<option value="sim">Sim</option>
-</select>
+      <label for="pneus">Estado dos Pneus</label>
+      <select id="pneus">
+        <option>Bom</option>
+        <option>Regular</option>
+        <option>Ruim</option>
+      </select>
 
-<div id="campoAvaria" class="hidden">
+      <label for="limpeza">Limpeza</label>
+      <select id="limpeza">
+        <option value="limpo">Limpo</option>
+        <option value="regular">Regular</option>
+        <option value="sujo">Sujo</option>
+      </select>
 
-<label>Fotos da avaria</label>
+      <label for="iluminacao">Iluminação</label>
+      <select id="iluminacao">
+        <option value="ok">OK</option>
+        <option value="problema">Problema</option>
+      </select>
 
-<input type="file" id="foto" accept="image/*" multiple>
-<div id="previewFotos"></div>
+      <div id="problemaLuzDiv" class="hidden">
+        <label>Qual problema?</label>
+        <div class="checkbox-group">
+          <label class="checkbox-label"><input type="checkbox" name="luz" value="Farol dianteiro"> Farol dianteiro</label>
+          <label class="checkbox-label"><input type="checkbox" name="luz" value="Farol de milha"> Farol de milha</label>
+          <label class="checkbox-label"><input type="checkbox" name="luz" value="Luz de freio"> Luz de freio</label>
+          <label class="checkbox-label"><input type="checkbox" name="luz" value="Seta dianteira"> Seta dianteira</label>
+          <label class="checkbox-label"><input type="checkbox" name="luz" value="Seta traseira"> Seta traseira</label>
+          <label class="checkbox-label"><input type="checkbox" name="luz" value="Luz de ré"> Luz de ré</label>
+          <label class="checkbox-label"><input type="checkbox" name="luz" value="Lanterna traseira"> Lanterna traseira</label>
+          <label class="checkbox-label"><input type="checkbox" name="luz" value="Luz de placa"> Luz de placa</label>
+          <label class="checkbox-label"><input type="checkbox" name="luz" value="Luz interna (cabine)"> Luz interna (cabine)</label>
+          <label class="checkbox-label"><input type="checkbox" name="luz" value="outro_luz"> Outro</label>
+        </div>
+        <input type="text" id="outroProblema" class="hidden" placeholder="Descreva o problema">
+      </div>
+    </div>
 
+    <div class="section">
+      <div class="section-title">⚠️ Avaria</div>
 
+      <label for="avaria">Existe avaria?</label>
+      <select id="avaria">
+        <option value="nao">Não</option>
+        <option value="sim">Sim</option>
+      </select>
 
-<div id="previewFotos"></div>
+      <div id="campoAvaria" class="hidden">
 
-<label>Descrição da avaria</label>
-<textarea id="descricaoAvaria"></textarea>
+        <label>Fotos da avaria <span class="badge">máx. 5</span></label>
+        <div id="fotoLimiteAviso" class="aviso-limite hidden">⚠️ Limite de 5 fotos atingido!</div>
+        <input type="file" id="foto" accept="image/*" multiple>
+        <div id="previewFotos"></div>
 
-</div>
+        <label>Descrição da avaria</label>
+        <textarea id="descricaoAvaria" placeholder="Descreva a avaria detalhadamente"></textarea>
+      </div>
+    </div>
 
-<label>Observações</label>
-<textarea id="observacoes"></textarea>
+    <div class="section">
+      <div class="section-title">📝 Observações</div>
+      <textarea id="observacoes" placeholder="Observações gerais sobre o veículo ou a viagem"></textarea>
+    </div>
 
-<label>Assinatura</label>
-<canvas id="assinatura"></canvas>
+    <div class="section">
+      <div class="section-title">✍️ Assinatura do Motorista</div>
+      <canvas id="assinatura"></canvas>
+      <button type="button" id="limpar">Limpar assinatura</button>
+    </div>
 
-<button type="button" id="limpar">Limpar assinatura</button>
+    <button type="submit" id="btnEnviar">Enviar Checklist</button>
+    <div id="loading" class="hidden">⏳ Enviando...</div>
 
-<button type="submit">Enviar Checklist</button>
-
-<div id="loading" class="hidden">Enviando...</div>
-
-</form>
+  </form>
 
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
