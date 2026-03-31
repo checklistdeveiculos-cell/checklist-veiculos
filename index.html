@@ -10,11 +10,11 @@
 <body>
 
 <div id="offlineBanner" class="offline-banner hidden">
-  📵 Sem internet — o checklist será enviado automaticamente quando a conexão voltar.
+   Sem internet — o checklist será enviado automaticamente quando a conexão voltar.
 </div>
 
 <div id="pendingBanner" class="pending-banner hidden">
-  📋 <span id="pendingCount"></span> checklist(s) salvo(s) aguardando envio.
+   <span id="pendingCount"></span> checklist(s) salvo(s) aguardando envio.
   <button type="button" id="btnEnviarPendentes">Enviar agora</button>
 </div>
 
@@ -28,7 +28,7 @@
   <form id="checklistForm">
 
     <div class="section">
-      <div class="section-title">👤 Identificação</div>
+      <div class="section-title"> Identificação</div>
 
       <label for="motorista">Nome do Motorista</label>
       <input type="text" id="motorista" required placeholder="Nome completo">
@@ -112,7 +112,7 @@
     </div>
 
     <div class="section">
-      <div class="section-title">🔧 Condições do Veículo</div>
+      <div class="section-title"> Condições do Veículo</div>
 
       <label for="combustivel">Combustível</label>
       <select id="combustivel">
@@ -162,7 +162,7 @@
     </div>
 
     <div class="section">
-      <div class="section-title">⚠️ Avaria</div>
+      <div class="section-title"> Avaria</div>
 
       <label for="avaria">Existe avaria?</label>
       <select id="avaria">
@@ -173,7 +173,7 @@
       <div id="campoAvaria" class="hidden">
 
         <label>Fotos da avaria <span class="badge">máx. 5</span></label>
-        <div id="fotoLimiteAviso" class="aviso-limite hidden">⚠️ Limite de 5 fotos atingido!</div>
+        <div id="fotoLimiteAviso" class="aviso-limite hidden"> Limite de 5 fotos atingido!</div>
         <input type="file" id="foto" accept="image/*" multiple>
         <div id="previewFotos"></div>
 
@@ -183,18 +183,18 @@
     </div>
 
     <div class="section">
-      <div class="section-title">📝 Observações</div>
+      <div class="section-title"> Observações</div>
       <textarea id="observacoes" placeholder="Observações gerais sobre o veículo ou a viagem"></textarea>
     </div>
 
     <div class="section">
-      <div class="section-title">✍️ Assinatura do Motorista</div>
+      <div class="section-title"> Assinatura do Motorista</div>
       <canvas id="assinatura"></canvas>
       <button type="button" id="limpar">Limpar assinatura</button>
     </div>
 
     <button type="submit" id="btnEnviar">Enviar Checklist</button>
-    <div id="loading" class="hidden">⏳ Enviando...</div>
+    <div id="loading" class="hidden"> Enviando...</div>
 
   </form>
 
