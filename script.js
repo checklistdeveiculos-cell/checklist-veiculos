@@ -1,92 +1,27 @@
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwbeMarnNVslGBkDA4kLpOMsXOpL-6OQmi0ur_nw8eZoQ_8zkwccdrlF0mA1pQlDyPw1g/exec"
 
-let dadosPlacas = {}
-
-const PLACAS_CACHE_KEY = "comtrasil_placas_cache"
-const PLACAS_DATA_KEY  = "comtrasil_placas_data"
-
-function salvarCachePlacas(lista) {
-  try {
-    localStorage.setItem(PLACAS_CACHE_KEY, JSON.stringify(lista))
-    localStorage.setItem(PLACAS_DATA_KEY, new Date().toISOString())
-  } catch(err) {
-    console.warn("Não foi possível salvar cache de placas:", err)
-  }
+const dadosPlacas = {
+  "CUI9G05": { fabricante: "Fiat",          modelo: "Strada" },
+  "FCK9I84": { fabricante: "Chevrolet",     modelo: "Onix" },
+  "FZB4I64": { fabricante: "Fiat",          modelo: "Strada" },
+  "GED3859":  { fabricante: "Chevrolet",    modelo: "Montana LS" },
+  "OKN4886":  { fabricante: "Volkswagen",   modelo: "Saveiro" },
+  "PGY2J57":  { fabricante: "Chevrolet",    modelo: "Montana LS" },
+  "PJK4140":  { fabricante: "Chevrolet",    modelo: "Montana LS" },
+  "PKU1762":  { fabricante: "Chevrolet",    modelo: "Montana LS" },
+  "PLJ0106":  { fabricante: "Honda",        modelo: "CG Start" },
+  "QNP2895":  { fabricante: "Chevrolet",    modelo: "Montana LS" },
+  "RDC7J81":  { fabricante: "Iveco",        modelo: "Daily 55" },
+  "RDR7H80":  { fabricante: "Chevrolet",    modelo: "Onix" },
+  "RPI1F38":  { fabricante: "Mercedes-Benz",modelo: "Sprinter" },
+  "RPN9E03":  { fabricante: "Volkswagen",   modelo: "Express DRF 4x2" },
+  "RPP2E64":  { fabricante: "Chevrolet",    modelo: "Onix Sedan" },
+  "RPP6E14":  { fabricante: "Chevrolet",    modelo: "Onix Hatch" },
+  "SJX0D93":  { fabricante: "Fiat",         modelo: "Strada Freedom DC 1.3 Flex" },
+  "SJX0G54":  { fabricante: "Fiat",         modelo: "Strada Endurance CP 1.3 Flex" },
+  "TGW9I45":  { fabricante: "Fiat",         modelo: "Strada EndurancE Cs 1.3 Flex" }
 }
 
-function getCachePlacas() {
-  try {
-    const raw = localStorage.getItem(PLACAS_CACHE_KEY)
-    return raw ? JSON.parse(raw) : null
-  } catch { return null }
-}
-
-function preencherSelectPlacas(lista, selectPlaca) {
-  while (selectPlaca.options.length > 1) selectPlaca.remove(1)
-
-  dadosPlacas = {}
-  lista.forEach(item => {
-    dadosPlacas[item.placa] = { fabricante: item.fabricante, modelo: item.modelo }
-    const opt = document.createElement("option")
-    opt.value = item.placa
-    opt.textContent = item.placa
-    selectPlaca.appendChild(opt)
-  })
-
-  const optOutro = document.createElement("option")
-  optOutro.value = "outro"
-  optOutro.textContent = "Outro"
-  selectPlaca.appendChild(optOutro)
-}
-
-async function carregarPlacas() {
-  const loadingDiv = document.getElementById("loadingPlacas")
-  const selectPlaca = document.getElementById("placa")
-
-  const cache = getCachePlacas()
-  if (cache && cache.length > 0) {
-    preencherSelectPlacas(cache, selectPlaca)
-    loadingDiv.classList.add("hidden")
-    selectPlaca.classList.remove("hidden")
-
-    const dataCache = localStorage.getItem(PLACAS_DATA_KEY)
-    if (dataCache) {
-      const d = new Date(dataCache)
-      const formatado = d.toLocaleDateString("pt-br") + " às " + d.toLocaleTimeString("pt-br", { hour: "2-digit", minute: "2-digit" })
-      loadingDiv.textContent = "📋 Lista do cache (" + formatado + ")"
-      loadingDiv.classList.remove("hidden")
-      loadingDiv.style.fontSize = "0.78rem"
-      loadingDiv.style.color = "#5a7080"
-      loadingDiv.style.background = "transparent"
-      loadingDiv.style.border = "none"
-      loadingDiv.style.padding = "2px 0"
-    }
-  }
-
-  if (navigator.onLine) {
-    try {
-      const res = await fetch(URL_SCRIPT + "?acao=placas")
-      const json = await res.json()
-
-      if (json && json.length > 0) {
-        salvarCachePlacas(json)
-        preencherSelectPlacas(json, selectPlaca)
-        loadingDiv.classList.add("hidden")
-        selectPlaca.classList.remove("hidden")
-      }
-
-    } catch (err) {
-      if (!cache || cache.length === 0) {
-        loadingDiv.textContent = "⚠️ Não foi possível carregar as placas. Verifique a conexão."
-        loadingDiv.classList.remove("hidden")
-      }
-    }
-
-  } else if (!cache || cache.length === 0) {
-    loadingDiv.textContent = "📵 Sem internet e sem cache salvo. Acesse uma vez com internet para liberar as placas offline."
-    loadingDiv.classList.remove("hidden")
-  }
-}
 
 const OFFLINE_KEY = "checklist_pendentes"
 
@@ -170,14 +105,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   monitorarConexao()
   atualizarBannerPendentes()
-  carregarPlacas()
 
   document.getElementById("btnEnviarPendentes").onclick = enviarPendentes
 
   const form = document.getElementById("checklistForm")
   const loading = document.getElementById("loading")
 
-  // ── Placa ──
+
   const selectPlaca = document.getElementById("placa")
   const placaOutro = document.getElementById("placaOutro")
   const infoVeiculo = document.getElementById("infoVeiculo")
