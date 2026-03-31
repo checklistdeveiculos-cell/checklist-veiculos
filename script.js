@@ -80,7 +80,7 @@ async function enviarPendentes() {
   atualizarBannerPendentes()
 
   if (enviados > 0) {
-    alert(`✅ ${enviados} checklist(s) pendente(s) enviado(s) com sucesso!`)
+    alert(` ${enviados} checklist(s) pendente(s) enviado(s) com sucesso!`)
   }
 }
 
@@ -324,7 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
         salvarPendente(dados)
         atualizarBannerPendentes()
         loading.classList.add("hidden")
-        alert("📵 Sem internet. Checklist salvo e será enviado automaticamente quando a conexão voltar.")
+        alert(" Sem internet. Checklist salvo e será enviado automaticamente quando a conexão voltar.")
         resetarFormulario(form, ctx, preview)
         arquivosSelecionados = []
         assinou = false
@@ -340,14 +340,14 @@ document.addEventListener("DOMContentLoaded", () => {
       ])
 
       loading.classList.add("hidden")
-      alert("✅ Checklist enviado com sucesso!")
+      alert(" Checklist enviado com sucesso!")
       resetarFormulario(form, ctx, preview)
       arquivosSelecionados = []
       assinou = false
 
     } catch (err) {
       loading.classList.add("hidden")
-      alert("❌ Erro ao enviar. Tente novamente.")
+      alert(" Erro ao enviar. Tente novamente.")
     }
   })
 
