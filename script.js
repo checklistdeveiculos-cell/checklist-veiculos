@@ -299,7 +299,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       await Promise.race([
         fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify(dados) }),
-        new Promise((_, reject) => setTimeout(() => reject("timeout"), 20000))
+        new Promise((_, reject) => setTimeout(() => reject("timeout"), 60000))
       ])
 
       loading.classList.add("hidden")
