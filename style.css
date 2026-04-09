@@ -384,4 +384,36 @@ button:active {
   .checkbox-group {
     grid-template-columns: 1fr;
   }
+
 }
+
+#secaoPDF {
+  padding: 20px 24px 28px;
+  text-align: center;
+}
+
+.pdf-sucesso {
+  background: #d4edda;
+  border: 1.5px solid #28a745;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #155724;
+  margin-bottom: 12px;
+}
+
+#btnPDF {
+  background: linear-gradient(135deg, #005499 0%, #fba447 100%);
+  color: white;
+  font-size: 1rem;
+  font-weight: 800;
+  padding: 14px;
+  border-radius: 10px;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  margin-top: 0;
+  box-shadow: 0 4px 16px rgba(0,84,153,0.2);
+}
+
