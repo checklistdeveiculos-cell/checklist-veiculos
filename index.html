@@ -10,204 +10,204 @@
 <body>
 
 <div id="offlineBanner" class="offline-banner hidden">
-   Sem internet — o checklist será enviado automaticamente quando a conexão voltar.
+ Sem internet o checklist será enviado automaticamente quando a conexão voltar.
 </div>
 
 <div id="pendingBanner" class="pending-banner hidden">
-   <span id="pendingCount"></span> checklist(s) salvo(s) aguardando envio.
-  <button type="button" id="btnEnviarPendentes">Enviar agora</button>
+ <span id="pendingCount"></span> checklist(s) salvo(s) aguardando envio.
+ <button type="button" id="btnEnviarPendentes">Enviar agora</button>
 </div>
 
 <div class="container">
 
-  <header>
-    <img src="logo.png" class="logo" alt="Logo Comtrasil">
-    <h1>Checklist de Inspeção de Veículo</h1>
-  </header>
+ <header>
+ <img src="logo.png" class="logo" alt="Logo Comtrasil">
+ <h1>Checklist de Inspeção de Veículo</h1>
+ </header>
 
-  <form id="checklistForm">
+ <form id="checklistForm">
 
-    <div class="section">
-      <div class="section-title"> Identificação</div>
+ <div class="section">
+ <div class="section-title"> Identificação</div>
 
-      <label for="tipoChecklist">Tipo de Checklist</label>
-      <select id="tipoChecklist" required>
-        <option value="">Selecione</option>
-        <option value="Entrada">Entrada</option>
-        <option value="Saída">Saída</option>
-      </select>
+ <label for="tipoChecklist">Tipo de Checklist</label>
+ <select id="tipoChecklist" required>
+ <option value="">Selecione</option>
+ <option value="Entrada">Entrada</option>
+ <option value="Saída">Saída</option>
+ </select>
 
-      <label for="motorista">Nome do Motorista</label>
-      <input type="text" id="motorista" required placeholder="Nome completo">
+ <label for="motorista">Nome do Motorista</label>
+ <input type="text" id="motorista" required placeholder="Nome completo">
 
-      <label for="placa">Placa</label>
-      <select id="placa" required>
-        <option value="">Selecione</option>
-        <option value="CUI9G05">CUI9G05</option>
-        <option value="FCK9I84">FCK9I84</option>
-        <option value="FZB4I64">FZB4I64</option>
-        <option value="GED3859">GED3859</option>
-        <option value="OKN4886">OKN4886</option>
-        <option value="PGY2J57">PGY2J57</option>
-        <option value="PJK4140">PJK4140</option>
-        <option value="PKU1762">PKU1762</option>
-        <option value="PLJ0106">PLJ0106</option>
-        <option value="QNP2895">QNP2895</option>
-        <option value="RDC7J81">RDC7J81</option>
-        <option value="RDR7H80">RDR7H80</option>
-        <option value="RPI1F38">RPI1F38</option>
-        <option value="RPN9E03">RPN9E03</option>
-        <option value="RPP2E64">RPP2E64</option>
-        <option value="RPP6E14">RPP6E14</option>
-        <option value="SJX0D93">SJX0D93</option>
-        <option value="SJX0G54">SJX0G54</option>
-        <option value="TGW9I45">TGW9I45</option>
-        <option value="outro">Outro</option>
-      </select>
+ <label for="placa">Placa</label>
+ <select id="placa" required>
+ <option value="">Selecione</option>
+ <option value="CUI9G05">CUI9G05</option>
+ <option value="FCK9I84">FCK9I84</option>
+ <option value="FZB4I64">FZB4I64</option>
+ <option value="GED3859">GED3859</option>
+ <option value="OKN4886">OKN4886</option>
+ <option value="PGY2J57">PGY2J57</option>
+ <option value="PJK4140">PJK4140</option>
+ <option value="PKU1762">PKU1762</option>
+ <option value="PLJ0106">PLJ0106</option>
+ <option value="QNP2895">QNP2895</option>
+ <option value="RDC7J81">RDC7J81</option>
+ <option value="RDR7H80">RDR7H80</option>
+ <option value="RPI1F38">RPI1F38</option>
+ <option value="RPN9E03">RPN9E03</option>
+ <option value="RPP2E64">RPP2E64</option>
+ <option value="RPP6E14">RPP6E14</option>
+ <option value="SJX0D93">SJX0D93</option>
+ <option value="SJX0G54">SJX0G54</option>
+ <option value="TGW9I45">TGW9I45</option>
+ <option value="outro">Outro</option>
+ </select>
 
-      <input type="text" id="placaOutro" class="hidden" placeholder="Digite a placa">
+ <input type="text" id="placaOutro" class="hidden" placeholder="Digite a placa">
 
-      <div id="infoVeiculo" class="hidden veiculo-info">
-        <div class="veiculo-grid">
-          <div>
-            <label for="fabricante">Fabricante</label>
-            <input type="text" id="fabricante" placeholder="Fabricante">
-          </div>
-          <div>
-            <label for="modelo">Modelo</label>
-            <input type="text" id="modelo" placeholder="Modelo">
-          </div>
-        </div>
-      </div>
+ <div id="infoVeiculo" class="hidden veiculo-info">
+ <div class="veiculo-grid">
+ <div>
+ <label for="fabricante">Fabricante</label>
+ <input type="text" id="fabricante" placeholder="Fabricante">
+ </div>
+ <div>
+ <label for="modelo">Modelo</label>
+ <input type="text" id="modelo" placeholder="Modelo">
+ </div>
+ </div>
+ </div>
 
-      <div id="descricaoVeiculoDiv" class="hidden">
-        <label for="descricaoVeiculo">Descrição do Veículo</label>
-        <textarea id="descricaoVeiculo" placeholder="Descreva o veículo (ex: caminhão baú branco)"></textarea>
-      </div>
+ <div id="descricaoVeiculoDiv" class="hidden">
+ <label for="descricaoVeiculo">Descrição do Veículo</label>
+ <textarea id="descricaoVeiculo" placeholder="Descreva o veículo (ex: caminhão baú branco)"></textarea>
+ </div>
 
-      <label for="km">KM Atual</label>
-      <input type="number" id="km" required placeholder="Ex: 24500">
+ <label for="km">KM Atual</label>
+ <input type="number" id="km" required placeholder="Ex: 24500">
 
-      <label for="cidade">Cidade de Origem</label>
-      <select id="cidade" required>
-        <option value="">Selecione</option>
-        <option>Brumado/BA (Matriz)</option>
-        <option>Maceió/AL</option>
-        <option>Camaçari/BA</option>
-        <option>Candeias/BA</option>
-        <option>Fortaleza/CE</option>
-        <option>Viana/ES</option>
-        <option>Goiânia/GO</option>
-        <option>Timóteo/MG</option>
-        <option>Juiz de Fora/MG</option>
-        <option>Santa Luzia/MG</option>
-        <option>Ouro Branco/MG</option>
-        <option>Vitória da Conquista/BA</option>
-        <option>Marabá/PA</option>
-        <option>Recife/PE</option>
-        <option>João Pessoa/PB</option>
-        <option>Sapucaia/RJ</option>
-        <option>Porto Alegre/RS</option>
-        <option>Araquari/SC</option>
-        <option>Nossa Senhora do Socorro/SE</option>
-        <option>Sumaré/SP</option>
-        <option>Piracicaba/SP</option>
-        <option>Pindamonhangaba/SP</option>
-        <option value="outro">Outro</option>
-      </select>
-      <input type="text" id="cidadeOutro" class="hidden" placeholder="Digite a cidade">
-    </div>
+ <label for="cidade">Cidade de Origem</label>
+ <select id="cidade" required>
+ <option value="">Selecione</option>
+ <option>Brumado/BA (Matriz)</option>
+ <option>Maceió/AL</option>
+ <option>Camaçari/BA</option>
+ <option>Candeias/BA</option>
+ <option>Fortaleza/CE</option>
+ <option>Viana/ES</option>
+ <option>Goiânia/GO</option>
+ <option>Timóteo/MG</option>
+ <option>Juiz de Fora/MG</option>
+ <option>Santa Luzia/MG</option>
+ <option>Ouro Branco/MG</option>
+ <option>Vitória da Conquista/BA</option>
+ <option>Marabá/PA</option>
+ <option>Recife/PE</option>
+ <option>João Pessoa/PB</option>
+ <option>Sapucaia/RJ</option>
+ <option>Porto Alegre/RS</option>
+ <option>Araquari/SC</option>
+ <option>Nossa Senhora do Socorro/SE</option>
+ <option>Sumaré/SP</option>
+ <option>Piracicaba/SP</option>
+ <option>Pindamonhangaba/SP</option>
+ <option value="outro">Outro</option>
+ </select>
+ <input type="text" id="cidadeOutro" class="hidden" placeholder="Digite a cidade">
+ </div>
 
-    <div class="section">
-      <div class="section-title"> Condições do Veículo</div>
+ <div class="section">
+ <div class="section-title"> Condições do Veículo</div>
 
-      <label for="combustivel">Combustível</label>
-      <select id="combustivel">
-        <option>Cheio</option>
-        <option>3/4</option>
-        <option>Meio</option>
-        <option>1/4</option>
-        <option>Reserva</option>
-      </select>
+ <label for="combustivel">Combustível</label>
+ <select id="combustivel">
+ <option>Cheio</option>
+ <option>3/4</option>
+ <option>Meio</option>
+ <option>1/4</option>
+ <option>Reserva</option>
+ </select>
 
-      <label for="pneus">Estado dos Pneus</label>
-      <select id="pneus">
-        <option>Bom</option>
-        <option>Regular</option>
-        <option>Ruim</option>
-      </select>
+ <label for="pneus">Estado dos Pneus</label>
+ <select id="pneus">
+ <option>Bom</option>
+ <option>Regular</option>
+ <option>Ruim</option>
+ </select>
 
-      <label for="limpeza">Limpeza</label>
-      <select id="limpeza">
-        <option value="limpo">Limpo</option>
-        <option value="regular">Regular</option>
-        <option value="sujo">Sujo</option>
-      </select>
+ <label for="limpeza">Limpeza</label>
+ <select id="limpeza">
+ <option value="limpo">Limpo</option>
+ <option value="regular">Regular</option>
+ <option value="sujo">Sujo</option>
+ </select>
 
-      <label for="iluminacao">Iluminação</label>
-      <select id="iluminacao">
-        <option value="ok">OK</option>
-        <option value="problema">Problema</option>
-      </select>
+ <label for="iluminacao">Iluminação</label>
+ <select id="iluminacao">
+ <option value="ok">OK</option>
+ <option value="problema">Problema</option>
+ </select>
 
-      <div id="problemaLuzDiv" class="hidden">
-        <label>Qual problema?</label>
-        <div class="checkbox-group">
-          <label class="checkbox-label"><input type="checkbox" name="luz" value="Farol dianteiro"> Farol dianteiro</label>
-          <label class="checkbox-label"><input type="checkbox" name="luz" value="Farol de milha"> Farol de milha</label>
-          <label class="checkbox-label"><input type="checkbox" name="luz" value="Luz de freio"> Luz de freio</label>
-          <label class="checkbox-label"><input type="checkbox" name="luz" value="Seta dianteira"> Seta dianteira</label>
-          <label class="checkbox-label"><input type="checkbox" name="luz" value="Seta traseira"> Seta traseira</label>
-          <label class="checkbox-label"><input type="checkbox" name="luz" value="Luz de ré"> Luz de ré</label>
-          <label class="checkbox-label"><input type="checkbox" name="luz" value="Lanterna traseira"> Lanterna traseira</label>
-          <label class="checkbox-label"><input type="checkbox" name="luz" value="Luz de placa"> Luz de placa</label>
-          <label class="checkbox-label"><input type="checkbox" name="luz" value="Luz interna (cabine)"> Luz interna (cabine)</label>
-          <label class="checkbox-label"><input type="checkbox" name="luz" value="outro_luz"> Outro</label>
-        </div>
-        <input type="text" id="outroProblema" class="hidden" placeholder="Descreva o problema">
-      </div>
-    </div>
+ <div id="problemaLuzDiv" class="hidden">
+ <label>Qual problema?</label>
+ <div class="checkbox-group">
+ <label class="checkbox-label"><input type="checkbox" name="luz" value="Farol dianteiro"> Farol dianteiro</label>
+ <label class="checkbox-label"><input type="checkbox" name="luz" value="Farol de milha"> Farol de milha</label>
+ <label class="checkbox-label"><input type="checkbox" name="luz" value="Luz de freio"> Luz de freio</label>
+ <label class="checkbox-label"><input type="checkbox" name="luz" value="Seta dianteira"> Seta dianteira</label>
+ <label class="checkbox-label"><input type="checkbox" name="luz" value="Seta traseira"> Seta traseira</label>
+ <label class="checkbox-label"><input type="checkbox" name="luz" value="Luz de ré"> Luz de ré</label>
+ <label class="checkbox-label"><input type="checkbox" name="luz" value="Lanterna traseira"> Lanterna traseira</label>
+ <label class="checkbox-label"><input type="checkbox" name="luz" value="Luz de placa"> Luz de placa</label>
+ <label class="checkbox-label"><input type="checkbox" name="luz" value="Luz interna (cabine)"> Luz interna (cabine)</label>
+ <label class="checkbox-label"><input type="checkbox" name="luz" value="outro_luz"> Outro</label>
+ </div>
+ <input type="text" id="outroProblema" class="hidden" placeholder="Descreva o problema">
+ </div>
+ </div>
 
-    <div class="section">
-      <div class="section-title"> Avaria</div>
+ <div class="section">
+ <div class="section-title"> Avaria</div>
 
-      <label for="avaria">Existe avaria?</label>
-      <select id="avaria">
-        <option value="nao">Não</option>
-        <option value="sim">Sim</option>
-      </select>
+ <label for="avaria">Existe avaria?</label>
+ <select id="avaria">
+ <option value="nao">Não</option>
+ <option value="sim">Sim</option>
+ </select>
 
-      <div id="campoAvaria" class="hidden">
-        <label>Fotos da avaria <span class="badge">máx. 5</span></label>
-        <div id="fotoLimiteAviso" class="aviso-limite hidden"> Limite de 5 fotos atingido!</div>
-        <input type="file" id="foto" accept="image/*" multiple>
-        <div id="previewFotos"></div>
+ <div id="campoAvaria" class="hidden">
+ <label>Fotos da avaria <span class="badge">máx. 5</span></label>
+ <div id="fotoLimiteAviso" class="aviso-limite hidden"> Limite de 5 fotos atingido!</div>
+ <input type="file" id="foto" accept="image/*" multiple>
+ <div id="previewFotos"></div>
 
-        <label>Descrição da avaria</label>
-        <textarea id="descricaoAvaria" placeholder="Descreva a avaria detalhadamente"></textarea>
-      </div>
-    </div>
+ <label>Descrição da avaria</label>
+ <textarea id="descricaoAvaria" placeholder="Descreva a avaria detalhadamente"></textarea>
+ </div>
+ </div>
 
-    <div class="section">
-      <div class="section-title"> Observações</div>
-      <textarea id="observacoes" placeholder="Observações gerais sobre o veículo ou a viagem"></textarea>
-    </div>
+ <div class="section">
+ <div class="section-title"> Observações</div>
+ <textarea id="observacoes" placeholder="Observações gerais sobre o veículo ou a viagem"></textarea>
+ </div>
 
-    <div class="section">
-      <div class="section-title"> Assinatura do Motorista</div>
-      <canvas id="assinatura"></canvas>
-      <button type="button" id="limpar">Limpar assinatura</button>
-    </div>
+ <div class="section">
+ <div class="section-title"> Assinatura do Motorista</div>
+ <canvas id="assinatura"></canvas>
+ <button type="button" id="limpar">Limpar assinatura</button>
+ </div>
 
-    <button type="submit" id="btnEnviar">Enviar Checklist</button>
-    <div id="loading" class="hidden">⏳ Enviando...</div>
+ <button type="submit" id="btnEnviar">Enviar Checklist</button>
+ <div id="loading" class="hidden"> Enviando...</div>
 
-  </form>
+ </form>
 
-  <div id="secaoPDF" class="hidden">
-    <div class="pdf-sucesso"> Checklist enviado com sucesso!</div>
-    <button type="button" id="btnPDF"> Baixar Comprovante PDF</button>
-  </div>
+ <div id="secaoPDF" class="hidden">
+ <div class="pdf-sucesso"> Checklist enviado com sucesso!</div>
+ <button type="button" id="btnPDF"> Baixar Comprovante PDF</button>
+ </div>
 
 </div>
 
