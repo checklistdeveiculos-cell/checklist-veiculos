@@ -1,6 +1,5 @@
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwbeMarnNVslGBkDA4kLpOMsXOpL-6OQmi0ur_nw8eZoQ_8zkwccdrlF0mA1pQlDyPw1g/exec"
 
-
 const dadosPlacas = {
   "CUI9G05": { fabricante: "Fiat",          modelo: "Strada" },
   "FCK9I84": { fabricante: "Chevrolet",     modelo: "Onix" },
@@ -23,8 +22,8 @@ const dadosPlacas = {
   "TGW9I45":  { fabricante: "Fiat",         modelo: "Strada EndurancE Cs 1.3 Flex" }
 }
 
-
 let ultimosDados = null
+let logoBase64 = null
 
 
 const OFFLINE_KEY = "checklist_pendentes"
@@ -64,10 +63,7 @@ async function enviarPendentes() {
   let enviados = 0
   for (let i = lista.length - 1; i >= 0; i--) {
     try {
-      await Promise.race([
-        fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify(lista[i].dados) }),
-        new Promise((_, reject) => setTimeout(() => reject("timeout"), 20000))
-      ])
+      fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify(lista[i].dados) })
       removerPendente(i)
       enviados++
     } catch (err) {}
@@ -91,18 +87,25 @@ function monitorarConexao() {
   atualizar()
 }
 
-
 document.addEventListener("DOMContentLoaded", () => {
 
   monitorarConexao()
   atualizarBannerPendentes()
+
+  fetch("logo.png")
+    .then(r => r.blob())
+    .then(blob => {
+      const reader = new FileReader()
+      reader.onload = () => { logoBase64 = reader.result }
+      reader.readAsDataURL(blob)
+    })
+    .catch(() => { logoBase64 = null })
 
   document.getElementById("btnEnviarPendentes").onclick = enviarPendentes
   document.getElementById("btnPDF").onclick = () => gerarPDF(ultimosDados)
 
   const form    = document.getElementById("checklistForm")
   const loading = document.getElementById("loading")
-
 
   const selectPlaca       = document.getElementById("placa")
   const placaOutro        = document.getElementById("placaOutro")
@@ -132,13 +135,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-
   const cidade      = document.getElementById("cidade")
   const cidadeOutro = document.getElementById("cidadeOutro")
   cidade.onchange = () => {
     cidadeOutro.classList.toggle("hidden", cidade.value !== "outro")
   }
-
 
   const iluminacao   = document.getElementById("iluminacao")
   const problemaDiv  = document.getElementById("problemaLuzDiv")
@@ -241,7 +242,6 @@ document.addEventListener("DOMContentLoaded", () => {
     assinou = false
   }
 
-
   form.addEventListener("submit", async (e) => {
     e.preventDefault()
 
@@ -297,10 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return
       }
 
-      await Promise.race([
-        fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify(dados) }),
-        new Promise((_, reject) => setTimeout(() => reject("timeout"), 60000))
-      ])
+      fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify(dados) })
 
       loading.classList.add("hidden")
 
@@ -329,23 +326,15 @@ function resetarFormulario(form, ctx, preview) {
   ids.forEach(id => document.getElementById(id).classList.add("hidden"))
 }
 
-
 function gerarPDF(d) {
   if (!d) return
 
+  const { jsPDF } = window.jspdf
+  const doc = new jsPDF({ unit: "mm", format: "a4" })
+
   const tipo  = d.tipoChecklist || ""
-  const cor   = tipo === "Entrada" ? "#2e9e5b" : "#d93025"
   const agora = d.dataHora || new Date().toLocaleString("pt-BR")
-
-
-  function linha(label, valor) {
-    if (!valor) return ""
-    return `
-      <tr>
-        <td style="padding:8px 12px;font-weight:700;color:#444;width:40%;border-bottom:1px solid #eee;">${label}</td>
-        <td style="padding:8px 12px;color:#222;border-bottom:1px solid #eee;">${valor}</td>
-      </tr>`
-  }
+  const corTipo = tipo === "Entrada" ? [46, 158, 91] : [217, 48, 37]
 
   const veiculo = d.fabricante && d.modelo
     ? `${d.fabricante} ${d.modelo}`
@@ -359,81 +348,110 @@ function gerarPDF(d) {
     ? `Sim — ${d.descricaoAvaria || "sem descrição"}${d.qtdFotos > 0 ? ` (${d.qtdFotos} foto(s) registrada(s))` : ""}`
     : "Não"
 
-  const html = `
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <title>Comprovante Checklist</title>
-      <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family: Arial, sans-serif; background:#fff; color:#222; }
-        .header { background:#005499; padding:24px 32px; display:flex; align-items:center; justify-content:space-between; }
-        .header h1 { color:#fff; font-size:16px; font-weight:700; }
-        .header .tipo { background:${cor}; color:#fff; padding:6px 18px; border-radius:20px; font-weight:700; font-size:15px; }
-        .subtitulo { background:#f0f4f8; padding:10px 32px; font-size:12px; color:#555; border-bottom:2px solid #005499; }
-        .corpo { padding:24px 32px; }
-        table { width:100%; border-collapse:collapse; margin-bottom:24px; }
-        .secao { font-size:13px; font-weight:800; color:#005499; text-transform:uppercase; letter-spacing:0.05em;
-                 padding:10px 12px; background:#f0f7ff; border-left:4px solid #005499; margin:20px 0 0; }
-        .assinatura-box { border:1.5px solid #ccc; border-radius:8px; padding:12px; text-align:center; margin-top:8px; }
-        .assinatura-box img { max-width:300px; max-height:120px; }
-        .rodape { margin-top:32px; padding-top:12px; border-top:1px solid #ccc;
-                  font-size:11px; color:#888; text-align:center; }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <h1>Comtrasil — Comprovante de Checklist</h1>
-        <span class="tipo">${tipo}</span>
-      </div>
-      <div class="subtitulo">Emitido em: ${agora}</div>
-      <div class="corpo">
+  const W = 210 
+  let y = 0
 
-        <div class="secao"> Identificação</div>
-        <table>
-          ${linha("Motorista", d.motorista)}
-          ${linha("Placa", d.placa)}
-          ${linha("Veículo", veiculo)}
-          ${linha("KM Atual", d.km)}
-          ${linha("Cidade de Origem", d.cidade)}
-        </table>
+  doc.setFillColor(0, 84, 153)
+  doc.rect(0, 0, W, 26, "F")
 
-        <div class="secao"> Condições do Veículo</div>
-        <table>
-          ${linha("Combustível", d.combustivel)}
-          ${linha("Pneus", d.pneus)}
-          ${linha("Limpeza", d.limpeza)}
-          ${linha("Iluminação", iluminacaoTexto)}
-        </table>
+  if (logoBase64) {
+    doc.addImage(logoBase64, "PNG", 10, 4, 36, 18)
+  }
 
-        <div class="secao"> Avaria</div>
-        <table>
-          ${linha("Avaria", avariaTexto)}
-        </table>
+  doc.setFontSize(12)
+  doc.setTextColor(255, 255, 255)
+  doc.setFont("helvetica", "bold")
+  doc.text("Comprovante de Checklist", logoBase64 ? 52 : 14, 16)
 
-        ${d.observacoes ? `
-        <div class="secao"> Observações</div>
-        <table>${linha("Observações", d.observacoes)}</table>` : ""}
+  doc.setFillColor(...corTipo)
+  doc.roundedRect(W - 46, 8, 34, 10, 3, 3, "F")
+  doc.setFontSize(10)
+  doc.text(tipo, W - 29, 15, { align: "center" })
 
-        <div class="secao"> Assinatura do Motorista</div>
-        <div class="assinatura-box">
-          <img src="${d.assinatura}" alt="Assinatura">
-          <p style="margin-top:8px;font-size:12px;color:#555;">${d.motorista}</p>
-        </div>
+  doc.setFillColor(240, 244, 248)
+  doc.rect(0, 26, W, 10, "F")
+  doc.setFontSize(9)
+  doc.setTextColor(80, 80, 80)
+  doc.setFont("helvetica", "normal")
+  doc.text(`Emitido em: ${agora}`, 14, 33)
 
-        <div class="rodape">
-          Comtrasil Transportadora · Documento gerado automaticamente pelo sistema de Checklist
-        </div>
-      </div>
-    </body>
-    </html>
-  `
+  y = 48
 
-  const janela = window.open("", "_blank")
-  janela.document.write(html)
-  janela.document.close()
-  janela.focus()
-  setTimeout(() => janela.print(), 600)
+  function secao(titulo) {
+    doc.setFillColor(240, 247, 255)
+    doc.rect(10, y - 5, W - 20, 8, "F")
+    doc.setDrawColor(0, 84, 153)
+    doc.setLineWidth(0.8)
+    doc.line(10, y - 5, 10, y + 3)
+    doc.setFontSize(9)
+    doc.setFont("helvetica", "bold")
+    doc.setTextColor(0, 84, 153)
+    doc.text(titulo, 14, y)
+    y += 8
+  }
+
+  function dado(label, valor) {
+    if (!valor) return
+    doc.setFontSize(9)
+    doc.setFont("helvetica", "bold")
+    doc.setTextColor(80, 80, 80)
+    doc.text(label + ":", 14, y)
+    doc.setFont("helvetica", "normal")
+    doc.setTextColor(30, 30, 30)
+    const linhas = doc.splitTextToSize(String(valor), 110)
+    doc.text(linhas, 75, y)
+    y += linhas.length * 6
+   
+    doc.setDrawColor(220, 220, 220)
+    doc.setLineWidth(0.2)
+    doc.line(14, y - 1, W - 14, y - 1)
+  }
+
+  secao("IDENTIFICAÇÃO")
+  dado("Motorista", d.motorista)
+  dado("Placa", d.placa)
+  dado("Veículo", veiculo)
+  dado("KM Atual", d.km)
+  dado("Cidade de Origem", d.cidade)
+
+  y += 4
+  secao("CONDIÇÕES DO VEÍCULO")
+  dado("Combustível", d.combustivel)
+  dado("Pneus", d.pneus)
+  dado("Limpeza", d.limpeza ? d.limpeza.charAt(0).toUpperCase() + d.limpeza.slice(1) : "")
+  dado("Iluminação", iluminacaoTexto)
+
+  y += 4
+  secao("AVARIA")
+  dado("Avaria", avariaTexto)
+
+  if (d.observacoes) {
+    y += 4
+    secao("OBSERVAÇÕES")
+    dado("Observações", d.observacoes)
+  }
+
+  y += 6
+  secao("ASSINATURA DO MOTORISTA")
+  try {
+    doc.addImage(d.assinatura, "PNG", 14, y, 80, 30)
+    y += 34
+    doc.setFontSize(9)
+    doc.setTextColor(80, 80, 80)
+    doc.setFont("helvetica", "normal")
+    doc.text(d.motorista, 54, y, { align: "center" })
+    y += 6
+  } catch(e) {}
+
+  doc.setDrawColor(200, 200, 200)
+  doc.setLineWidth(0.3)
+  doc.line(14, 285, W - 14, 285)
+  doc.setFontSize(8)
+  doc.setTextColor(150, 150, 150)
+  doc.text("Comtrasil Transportadora · Documento gerado automaticamente pelo sistema de Checklist", W / 2, 290, { align: "center" })
+
+  const nomeArquivo = `checklist_${tipo}_${d.placa}_${d.dataHora.replace(/[/:, ]/g, "-")}.pdf`
+  doc.save(nomeArquivo)
 }
 
 function reduzirImagem(file) {
@@ -445,12 +463,12 @@ function reduzirImagem(file) {
       img.onload = function () {
         const canvas = document.createElement("canvas")
         const ctx    = canvas.getContext("2d")
-        const maxWidth = 300
+        const maxWidth = 400
         let width = img.width, height = img.height
         if (width > maxWidth) { height *= maxWidth / width; width = maxWidth }
         canvas.width = width; canvas.height = height
         ctx.drawImage(img, 0, 0, width, height)
-        resolve(canvas.toDataURL("image/jpeg", 0.3))
+        resolve(canvas.toDataURL("image/jpeg", 0.5))
       }
     }
     reader.readAsDataURL(file)
