@@ -1,6 +1,5 @@
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwbeMarnNVslGBkDA4kLpOMsXOpL-6OQmi0ur_nw8eZoQ_8zkwccdrlF0mA1pQlDyPw1g/exec"
 
-// Placas fixas 
 const dadosPlacas = {
  "CUI9G05": { fabricante: "Fiat", modelo: "Strada" },
  "FCK9I84": { fabricante: "Chevrolet", modelo: "Onix" },
@@ -23,10 +22,8 @@ const dadosPlacas = {
  "TGW9I45": { fabricante: "Fiat", modelo: "Strada EndurancE Cs 1.3 Flex" }
 }
 
-// Guarda dados do último envio para o PDF 
 let ultimosDados = null
 
-// OFFLINE 
 const OFFLINE_KEY = "checklist_pendentes"
 
 function getPendentes() {
@@ -88,7 +85,6 @@ function monitorarConexao() {
  atualizar()
 }
 
-// INIT 
 document.addEventListener("DOMContentLoaded", () => {
 
  monitorarConexao()
@@ -102,7 +98,6 @@ document.addEventListener("DOMContentLoaded", () => {
  const form = document.getElementById("checklistForm")
  const loading = document.getElementById("loading")
 
- // Placa 
  const selectPlaca = document.getElementById("placa")
  const placaOutro = document.getElementById("placaOutro")
  const infoVeiculo = document.getElementById("infoVeiculo")
@@ -131,14 +126,12 @@ document.addEventListener("DOMContentLoaded", () => {
  }
  }
 
- // Cidade 
  const cidade = document.getElementById("cidade")
  const cidadeOutro = document.getElementById("cidadeOutro")
  cidade.onchange = () => {
  cidadeOutro.classList.toggle("hidden", cidade.value !== "outro")
  }
-
- // Iluminação 
+ 
  const iluminacao = document.getElementById("iluminacao")
  const problemaDiv = document.getElementById("problemaLuzDiv")
  const outroProblema = document.getElementById("outroProblema")
@@ -152,14 +145,12 @@ document.addEventListener("DOMContentLoaded", () => {
  })
  })
 
- // Avaria 
  const avaria = document.getElementById("avaria")
  const campoAvaria = document.getElementById("campoAvaria")
  avaria.onchange = () => {
  campoAvaria.classList.toggle("hidden", avaria.value !== "sim")
  }
-
- // Fotos 
+ 
  const inputFotos = document.getElementById("foto")
  const preview = document.getElementById("previewFotos")
  const avisoLimite = document.getElementById("fotoLimiteAviso")
@@ -198,8 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
  if (arquivosSelecionados.length >= MAX_FOTOS) avisoLimite.classList.remove("hidden")
  inputFotos.value = ""
  })
-
- // Canvas assinatura 
+ 
  const canvas = document.getElementById("assinatura")
  const ctx = canvas.getContext("2d")
  canvas.width = canvas.offsetWidth
@@ -243,7 +233,6 @@ document.addEventListener("DOMContentLoaded", () => {
  assinou = false
  }
 
- // Submit 
  form.addEventListener("submit", async (e) => {
  e.preventDefault()
 
@@ -303,7 +292,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
  loading.classList.add("hidden")
 
- // Guarda dados e mostra seção PDF
  ultimosDados = dados
  document.getElementById("secaoPDF").classList.remove("hidden")
  document.getElementById("secaoPDF").scrollIntoView({ behavior: "smooth" })
@@ -319,8 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
  })
 
 })
-
-// Resetar formulário 
+ 
 function resetarFormulario(form, ctx, preview) {
  form.reset()
  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
@@ -330,7 +317,6 @@ function resetarFormulario(form, ctx, preview) {
  ids.forEach(id => document.getElementById(id).classList.add("hidden"))
 }
 
-// Gerar PDF comprovante  
 function gerarPDF(d) {
  if (!d) return
 
@@ -339,7 +325,7 @@ function gerarPDF(d) {
 
  const tipo = d.tipoChecklist || ""
  const agora = d.dataHora || new Date().toLocaleString("pt-BR")
- const corTipo = tipo === "Entrada" ? [46, 158, 91] : [217, 48, 37]
+ const corTipo = tipo === "Devolucao" ? [46, 158, 91] : [217, 48, 37]
 
  const veiculo = d.fabricante && d.modelo
  ? `${d.fabricante} ${d.modelo}`
@@ -353,7 +339,7 @@ function gerarPDF(d) {
  ? `Sim ${d.descricaoAvaria || "sem descrição"}${d.qtdFotos > 0 ? ` (${d.qtdFotos} foto(s) registrada(s))` : ""}`
  : "Não"
 
- const W = 210 // largura A4
+ const W = 210 
  let y = 0
 
  doc.setFillColor(0, 84, 153)
@@ -383,7 +369,6 @@ function gerarPDF(d) {
 
  y = 48
 
- // Função para seção 
  function secao(titulo) {
  doc.setFillColor(240, 247, 255)
  doc.rect(10, y - 5, W - 20, 8, "F")
@@ -396,8 +381,7 @@ function gerarPDF(d) {
  doc.text(titulo, 14, y)
  y += 8
  }
-
- // Função para linha de dado 
+ 
  function dado(label, valor) {
  if (!valor) return
  doc.setFontSize(9)
@@ -409,13 +393,12 @@ function gerarPDF(d) {
  const linhas = doc.splitTextToSize(String(valor), 110)
  doc.text(linhas, 75, y)
  y += linhas.length * 6
- // Linha separadora
+
  doc.setDrawColor(220, 220, 220)
  doc.setLineWidth(0.2)
  doc.line(14, y - 1, W - 14, y - 1)
  }
-
- // Identificação 
+ 
  secao("IDENTIFICAÇÃO")
  dado("Motorista", d.motorista)
  dado("Placa", d.placa)
@@ -439,8 +422,7 @@ function gerarPDF(d) {
  secao("OBSERVAÇÕES")
  dado("Observações", d.observacoes)
  }
-
- // Assinatura 
+ 
  y += 6
  secao("ASSINATURA DO MOTORISTA")
  try {
@@ -453,20 +435,17 @@ function gerarPDF(d) {
  y += 6
  } catch(e) {}
 
- // Rodapé 
  doc.setDrawColor(200, 200, 200)
  doc.setLineWidth(0.3)
  doc.line(14, 285, W - 14, 285)
  doc.setFontSize(8)
  doc.setTextColor(150, 150, 150)
  doc.text("Comtrasil Transportadora Documento gerado automaticamente pelo sistema de Checklist", W / 2, 290, { align: "center" })
-
- // Download 
+ 
  const nomeArquivo = `checklist_${tipo}_${d.placa}_${d.dataHora.replace(/[/:, ]/g, "-")}.pdf`
  doc.save(nomeArquivo)
 }
-
-// Reduzir imagem 
+ 
 function reduzirImagem(file) {
  return new Promise((resolve) => {
  const reader = new FileReader()
