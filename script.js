@@ -1,4 +1,4 @@
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwbeMarnNVslGBkDA4kLpOMsXOpL-6OQmi0ur_nw8eZoQ_8zkwccdrlF0mA1pQlDyPw1g/exec"
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycby0IamJSG2JrhfgXzQK2-Ch5sc2NAeFfGc8iug6ySi5ZWDrp7B0qErddq_Rj4gyMgRKSg/exec"
 
 const dadosPlacas = {
  "CUI9G05": { fabricante: "Fiat", modelo: "Strada" },
